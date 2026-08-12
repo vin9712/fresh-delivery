@@ -95,6 +95,16 @@ const routes = [
         path: 'acceptance',
         name: 'Acceptance',
         component: () => import('../views/delivery/Acceptance.vue')
+      },
+      {
+        path: 'supplier',
+        name: 'Supplier',
+        component: () => import('../views/purchase/Supplier.vue')
+      },
+      {
+        path: 'purchase-order',
+        name: 'PurchaseOrder',
+        component: () => import('../views/purchase/PurchaseOrder.vue')
       }
     ],
     meta: { requiresAuth: true }

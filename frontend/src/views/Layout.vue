@@ -109,6 +109,20 @@
             <template #title>验收单</template>
           </el-menu-item>
         </el-sub-menu>
+        <el-sub-menu index="/purchase">
+          <template #title>
+            <el-icon><ShoppingCart /></el-icon>
+            <span>采购管理</span>
+          </template>
+          <el-menu-item index="/supplier">
+            <el-icon><OfficeBuilding /></el-icon>
+            <template #title>供应商</template>
+          </el-menu-item>
+          <el-menu-item index="/purchase-order">
+            <el-icon><List /></el-icon>
+            <template #title>采购单</template>
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 
