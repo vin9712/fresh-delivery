@@ -65,6 +65,16 @@ const routes = [
         path: 'delivery-point',
         name: 'DeliveryPoint',
         component: () => import('../views/base/DeliveryPoint.vue')
+      },
+      {
+        path: 'template',
+        name: 'PriceTemplate',
+        component: () => import('../views/price/PriceTemplate.vue')
+      },
+      {
+        path: 'customer-price',
+        name: 'CustomerPrice',
+        component: () => import('../views/price/CustomerPrice.vue')
       }
     ],
     meta: { requiresAuth: true }

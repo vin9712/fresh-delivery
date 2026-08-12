@@ -67,6 +67,20 @@
             <template #title>配送点</template>
           </el-menu-item>
         </el-sub-menu>
+        <el-sub-menu index="/price">
+          <template #title>
+            <el-icon><PriceTag /></el-icon>
+            <span>报价管理</span>
+          </template>
+          <el-menu-item index="/template">
+            <el-icon><Document /></el-icon>
+            <template #title>报价方案</template>
+          </el-menu-item>
+          <el-menu-item index="/customer-price">
+            <el-icon><UserFilled /></el-icon>
+            <template #title>客户报价</template>
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 
