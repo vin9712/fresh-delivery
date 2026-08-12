@@ -233,7 +233,7 @@ CREATE TABLE delivery_point_price (
 -- 5. 订单表
 -- ============================================================
 
-CREATE TABLE order (
+CREATE TABLE orders (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     order_no    VARCHAR(30)  NOT NULL COMMENT '订单编号',
     order_date  DATE         NOT NULL COMMENT '订单日期(D天)',
@@ -512,9 +512,9 @@ INSERT INTO sys_role_permission (role_id, permission_id) VALUES
 
 -- 初始用户 (密码: admin123 → BCrypt)
 INSERT INTO sys_user (id, username, password, real_name, role_id, status) VALUES
-(1, 'admin',    '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '管理员', 2, 1),
-(2, 'clerk01',  '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '文员一',   1, 1),
-(3, 'clerk02',  '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '文员二',   1, 1);
+(1, 'admin',    '$2b$10$QKjjw1BDy4.XGQxJWBTd9usmZIfWdfs80hn1jl.tlxHo5UmpT6O5C', '管理员', 2, 1),
+(2, 'clerk01',  '$2b$10$QKjjw1BDy4.XGQxJWBTd9usmZIfWdfs80hn1jl.tlxHo5UmpT6O5C', '文员一',   1, 1),
+(3, 'clerk02',  '$2b$10$QKjjw1BDy4.XGQxJWBTd9usmZIfWdfs80hn1jl.tlxHo5UmpT6O5C', '文员二',   1, 1);
 
 -- 初始用户角色关联
 INSERT INTO sys_user_role (user_id, role_id) VALUES
