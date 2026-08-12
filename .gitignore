@@ -9,3 +9,23 @@
 
 # OS
 Thumbs.db
+
+# Java
+target/
+*.class
+*.jar
+*.war
+.classpath
+.project
+.settings/
+
+# Node
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Logs
+*.log
+
