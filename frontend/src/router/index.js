@@ -40,6 +40,31 @@ const routes = [
         path: 'approval',
         name: 'Approval',
         component: () => import('../views/sys/Approval.vue')
+      },
+      {
+        path: 'product',
+        name: 'Product',
+        component: () => import('../views/base/Product.vue')
+      },
+      {
+        path: 'sku',
+        name: 'Sku',
+        component: () => import('../views/base/Sku.vue')
+      },
+      {
+        path: 'category',
+        name: 'Category',
+        component: () => import('../views/base/CustomerCategory.vue')
+      },
+      {
+        path: 'customer',
+        name: 'Customer',
+        component: () => import('../views/base/Customer.vue')
+      },
+      {
+        path: 'delivery-point',
+        name: 'DeliveryPoint',
+        component: () => import('../views/base/DeliveryPoint.vue')
       }
     ],
     meta: { requiresAuth: true }

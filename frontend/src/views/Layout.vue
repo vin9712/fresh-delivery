@@ -41,6 +41,32 @@
             <template #title>操作日志</template>
           </el-menu-item>
         </el-sub-menu>
+        <el-sub-menu index="/base">
+          <template #title>
+            <el-icon><Memo /></el-icon>
+            <span>基础数据</span>
+          </template>
+          <el-menu-item index="/product">
+            <el-icon><Goods /></el-icon>
+            <template #title>商品管理</template>
+          </el-menu-item>
+          <el-menu-item index="/sku">
+            <el-icon><Box /></el-icon>
+            <template #title>SKU管理</template>
+          </el-menu-item>
+          <el-menu-item index="/category">
+            <el-icon><Fold /></el-icon>
+            <template #title>客户分类</template>
+          </el-menu-item>
+          <el-menu-item index="/customer">
+            <el-icon><UserFilled /></el-icon>
+            <template #title>客户管理</template>
+          </el-menu-item>
+          <el-menu-item index="/delivery-point">
+            <el-icon><Location /></el-icon>
+            <template #title>配送点</template>
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 
