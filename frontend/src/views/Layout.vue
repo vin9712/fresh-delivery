@@ -123,6 +123,10 @@
             <template #title>采购单</template>
           </el-menu-item>
         </el-sub-menu>
+        <el-menu-item index="/report-center">
+          <el-icon><DataAnalysis /></el-icon>
+          <template #title>报表中心</template>
+        </el-menu-item>
       </el-menu>
     </el-aside>
 

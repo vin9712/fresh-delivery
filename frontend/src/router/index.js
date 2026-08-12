@@ -105,6 +105,11 @@ const routes = [
         path: 'purchase-order',
         name: 'PurchaseOrder',
         component: () => import('../views/purchase/PurchaseOrder.vue')
+      },
+      {
+        path: 'report-center',
+        name: 'ReportCenter',
+        component: () => import('../views/report/ReportCenter.vue')
       }
     ],
     meta: { requiresAuth: true }
