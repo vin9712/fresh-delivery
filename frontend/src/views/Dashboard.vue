@@ -50,12 +50,12 @@
           <span>系统说明</span>
         </div>
       </template>
-      <p>欢迎使用生鲜配送管理系统。M1/M2/M3 已完成，后续模块按里程碑逐步开发：</p>
-      <el-steps :active="3" finish-status="success" align-center>
+      <p>欢迎使用生鲜配送管理系统。M1/M2/M3/M4 已完成，后续模块按里程碑逐步开发：</p>
+      <el-steps :active="4" finish-status="success" align-center>
         <el-step title="系统管理" description="用户/角色/权限/日志/审批" />
         <el-step title="基础数据" description="商品/SKU/客户分类/客户/配送点" />
         <el-step title="报价管理" description="报价方案/客户报价/模板导入" />
-        <el-step title="订单管理" />
+        <el-step title="订单管理" description="订单列表/加退单/取价" />
         <el-step title="配送验收" />
         <el-step title="采购管理" />
         <el-step title="报表中心" />

@@ -81,6 +81,20 @@
             <template #title>客户报价</template>
           </el-menu-item>
         </el-sub-menu>
+        <el-sub-menu index="/order">
+          <template #title>
+            <el-icon><Document /></el-icon>
+            <span>订单管理</span>
+          </template>
+          <el-menu-item index="/order">
+            <el-icon><List /></el-icon>
+            <template #title>订单列表</template>
+          </el-menu-item>
+          <el-menu-item index="/order-adjustment">
+            <el-icon><Edit /></el-icon>
+            <template #title>加退单</template>
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 

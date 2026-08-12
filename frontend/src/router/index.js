@@ -75,6 +75,16 @@ const routes = [
         path: 'customer-price',
         name: 'CustomerPrice',
         component: () => import('../views/price/CustomerPrice.vue')
+      },
+      {
+        path: 'order',
+        name: 'Order',
+        component: () => import('../views/order/Order.vue')
+      },
+      {
+        path: 'order-adjustment',
+        name: 'OrderAdjustment',
+        component: () => import('../views/order/OrderAdjustment.vue')
       }
     ],
     meta: { requiresAuth: true }
