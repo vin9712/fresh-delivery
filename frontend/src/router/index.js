@@ -85,6 +85,16 @@ const routes = [
         path: 'order-adjustment',
         name: 'OrderAdjustment',
         component: () => import('../views/order/OrderAdjustment.vue')
+      },
+      {
+        path: 'delivery-order',
+        name: 'DeliveryOrder',
+        component: () => import('../views/delivery/DeliveryOrder.vue')
+      },
+      {
+        path: 'acceptance',
+        name: 'Acceptance',
+        component: () => import('../views/delivery/Acceptance.vue')
       }
     ],
     meta: { requiresAuth: true }

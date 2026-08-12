@@ -95,6 +95,20 @@
             <template #title>加退单</template>
           </el-menu-item>
         </el-sub-menu>
+        <el-sub-menu index="/delivery">
+          <template #title>
+            <el-icon><Van /></el-icon>
+            <span>配送验收</span>
+          </template>
+          <el-menu-item index="/delivery-order">
+            <el-icon><List /></el-icon>
+            <template #title>送货单</template>
+          </el-menu-item>
+          <el-menu-item index="/acceptance">
+            <el-icon><DocumentChecked /></el-icon>
+            <template #title>验收单</template>
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 
