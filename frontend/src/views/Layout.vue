@@ -15,6 +15,32 @@
           <el-icon><DataAnalysis /></el-icon>
           <template #title>首页</template>
         </el-menu-item>
+        <el-sub-menu index="/sys">
+          <template #title>
+            <el-icon><Setting /></el-icon>
+            <span>系统管理</span>
+          </template>
+          <el-menu-item index="/user">
+            <el-icon><User /></el-icon>
+            <template #title>用户管理</template>
+          </el-menu-item>
+          <el-menu-item index="/role">
+            <el-icon><UserFilled /></el-icon>
+            <template #title>角色管理</template>
+          </el-menu-item>
+          <el-menu-item index="/permission">
+            <el-icon><Key /></el-icon>
+            <template #title>权限管理</template>
+          </el-menu-item>
+          <el-menu-item index="/approval">
+            <el-icon><DocumentChecked /></el-icon>
+            <template #title>审批中心</template>
+          </el-menu-item>
+          <el-menu-item index="/log">
+            <el-icon><List /></el-icon>
+            <template #title>操作日志</template>
+          </el-menu-item>
+        </el-sub-menu>
       </el-menu>
     </el-aside>
 
@@ -89,6 +115,9 @@ const collapsed = computed(() => false)
 .aside-menu .el-menu-item.is-active {
   color: #fff;
   background: #409eff;
+}
+.aside-menu .el-sub-menu__title {
+  color: #bfcbd9;
 }
 .layout-header {
   display: flex;

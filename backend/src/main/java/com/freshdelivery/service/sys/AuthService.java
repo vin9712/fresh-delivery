@@ -30,12 +30,7 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(username);
-        AuthVO vo = new AuthVO();
-        vo.setToken(token);
-        vo.setUserId(user.getId());
-        vo.setUsername(user.getUsername());
-        vo.setRealName(user.getRealName());
-        return vo;
+        return new AuthVO(user.getId(), user.getUsername(), user.getRealName(), token);
     }
 
     public record AuthVO(Long userId, String username, String realName, String token) {}

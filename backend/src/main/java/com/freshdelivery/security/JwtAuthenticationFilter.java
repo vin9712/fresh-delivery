@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -33,8 +34,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = extractToken(request);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (token != null && !SecurityContextHolder.getContext().getAuthentication().hasAuthority()) {
+        if (token != null && (auth == null || !auth.isAuthenticated())) {
             try {
                 SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
                 Claims claims = Jwts.parser()
@@ -44,10 +46,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .getPayload();
 
                 String username = claims.getSubject();
-                UsernamePasswordAuthenticationToken auth =
+                UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(username, null,
                                 userDetailService.loadUserByUsername(username).getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             } catch (Exception ignored) {
             }
         }

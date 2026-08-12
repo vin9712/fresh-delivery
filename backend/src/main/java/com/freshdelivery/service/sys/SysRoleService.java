@@ -1,8 +1,11 @@
 package com.freshdelivery.service.sys;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.freshdelivery.entity.sys.SysPermission;
 import com.freshdelivery.entity.sys.SysRole;
 import com.freshdelivery.entity.sys.SysRolePermission;
+import com.freshdelivery.mapper.sys.SysPermissionMapper;
 import com.freshdelivery.mapper.sys.SysRoleMapper;
 import com.freshdelivery.mapper.sys.SysRolePermissionMapper;
 import com.freshdelivery.common.exception.BusinessException;
@@ -16,6 +19,7 @@ import java.util.List;
 public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
 
     @Autowired private SysRolePermissionMapper rolePermissionMapper;
+    @Autowired private SysPermissionMapper permissionMapper;
 
     @Transactional
     public SysRole create(SysRole role, List<Long> permissionIds) {
@@ -35,7 +39,7 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
         role.setId(id);
         this.updateById(role);
 
-        rolePermissionMapper.delete(new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<SysRolePermission>()
+        rolePermissionMapper.delete(new LambdaQueryWrapper<>(SysRolePermission.class)
                 .eq(SysRolePermission::getRoleId, id));
         if (permissionIds != null && !permissionIds.isEmpty()) {
             for (Long pid : permissionIds) {
@@ -45,5 +49,16 @@ public class SysRoleService extends ServiceImpl<SysRoleMapper, SysRole> {
                 rolePermissionMapper.insert(rp);
             }
         }
+    }
+
+    public List<SysPermission> findRolePermissions(Long roleId) {
+        List<Long> permIds = rolePermissionMapper.selectList(
+                new LambdaQueryWrapper<>(SysRolePermission.class)
+                        .eq(SysRolePermission::getRoleId, roleId))
+                .stream()
+                .map(SysRolePermission::getPermissionId)
+                .toList();
+        if (permIds.isEmpty()) return List.of();
+        return permissionMapper.selectBatchIds(permIds);
     }
 }

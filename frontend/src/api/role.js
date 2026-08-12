@@ -11,3 +11,7 @@ export function createRole(data) {
 export function updateRole(id, data) {
   return request({ url: `/sys/role/${id}`, method: 'put', data })
 }
+
+export function findRolePermissions(id) {
+  return request({ url: `/sys/role/${id}/permissions`, method: 'get' })
+}

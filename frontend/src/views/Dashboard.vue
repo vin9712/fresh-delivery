@@ -50,10 +50,9 @@
           <span>系统说明</span>
         </div>
       </template>
-      <p>欢迎使用生鲜配送管理系统。</p>
-      <p>M0 脚手架已就绪，后续模块按里程碑逐步开发：</p>
-      <el-steps :active="0" finish-status="success" align-center>
-        <el-step title="系统管理" />
+      <p>欢迎使用生鲜配送管理系统。M1 系统管理已就绪，后续模块按里程碑逐步开发：</p>
+      <el-steps :active="1" finish-status="success" align-center>
+        <el-step title="系统管理" description="用户/角色/权限/日志/审批" />
         <el-step title="基础数据" />
         <el-step title="报价管理" />
         <el-step title="订单管理" />

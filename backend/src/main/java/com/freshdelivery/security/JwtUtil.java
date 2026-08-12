@@ -25,7 +25,7 @@ public class JwtUtil {
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
-                .compile();
+                .compact();
     }
 
     public boolean validateToken(String token) {

@@ -19,7 +19,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public Result<AuthService.AuthVO> login(@Valid @RequestBody LoginRequest req) {
-        return Result.ok(authService.login(req.getUsername(), req.getPassword()));
+        return Result.ok(authService.login(req.username(), req.password()));
     }
 
     @GetMapping("/info")

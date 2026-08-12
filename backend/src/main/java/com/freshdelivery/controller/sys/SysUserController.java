@@ -3,6 +3,7 @@ package com.freshdelivery.controller.sys;
 import com.freshdelivery.common.Result;
 import com.freshdelivery.common.PageResult;
 import com.freshdelivery.common.aop.OperationLog;
+import com.freshdelivery.entity.sys.SysRole;
 import com.freshdelivery.entity.sys.SysUser;
 import com.freshdelivery.service.sys.SysUserService;
 import jakarta.validation.Valid;
@@ -30,15 +31,20 @@ public class SysUserController {
         return Result.ok(userService.detail(id));
     }
 
+    @GetMapping("/{id}/roles")
+    public Result<List<SysRole>> roles(@PathVariable Long id) {
+        return Result.ok(userService.findUserRoles(id));
+    }
+
     @PostMapping
     @OperationLog(module = "user", action = "add")
     public Result<Void> create(@Valid @RequestBody UserForm form) {
         SysUser user = new SysUser();
-        user.setUsername(form.getUsername());
-        user.setPassword(form.getPassword());
-        user.setRealName(form.getRealName());
-        user.setRoleId(form.getRoleId());
-        userService.create(user, form.getRoleIds());
+        user.setUsername(form.username());
+        user.setPassword(form.password());
+        user.setRealName(form.realName());
+        user.setRoleId(form.roleId());
+        userService.create(user, form.roleIds());
         return Result.ok();
     }
 
@@ -46,11 +52,11 @@ public class SysUserController {
     @OperationLog(module = "user", action = "edit")
     public Result<Void> update(@PathVariable Long id, @Valid @RequestBody UserForm form) {
         SysUser user = new SysUser();
-        user.setUsername(form.getUsername());
-        user.setPassword(form.getPassword());
-        user.setRealName(form.getRealName());
-        user.setRoleId(form.getRoleId());
-        userService.update(id, user, form.getRoleIds());
+        user.setUsername(form.username());
+        user.setPassword(form.password());
+        user.setRealName(form.realName());
+        user.setRoleId(form.roleId());
+        userService.update(id, user, form.roleIds());
         return Result.ok();
     }
 

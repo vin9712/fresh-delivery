@@ -19,3 +19,7 @@ export function updateUser(id, data) {
 export function deleteUser(id) {
   return request({ url: `/sys/user/${id}`, method: 'delete' })
 }
+
+export function findUserRoles(id) {
+  return request({ url: `/sys/user/${id}/roles`, method: 'get' })
+}

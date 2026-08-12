@@ -15,6 +15,31 @@ const routes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('../views/Dashboard.vue')
+      },
+      {
+        path: 'user',
+        name: 'User',
+        component: () => import('../views/sys/User.vue')
+      },
+      {
+        path: 'role',
+        name: 'Role',
+        component: () => import('../views/sys/Role.vue')
+      },
+      {
+        path: 'permission',
+        name: 'Permission',
+        component: () => import('../views/sys/Permission.vue')
+      },
+      {
+        path: 'log',
+        name: 'Log',
+        component: () => import('../views/sys/Log.vue')
+      },
+      {
+        path: 'approval',
+        name: 'Approval',
+        component: () => import('../views/sys/Approval.vue')
       }
     ],
     meta: { requiresAuth: true }

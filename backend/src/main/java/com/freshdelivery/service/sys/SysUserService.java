@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freshdelivery.common.PageResult;
 import com.freshdelivery.common.exception.BusinessException;
+import com.freshdelivery.entity.sys.SysRole;
 import com.freshdelivery.entity.sys.SysUser;
 import com.freshdelivery.entity.sys.SysUserRole;
+import com.freshdelivery.mapper.sys.SysRoleMapper;
 import com.freshdelivery.mapper.sys.SysUserMapper;
 import com.freshdelivery.mapper.sys.SysUserRoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import java.util.List;
 public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
 
     @Autowired private SysUserRoleMapper userRoleMapper;
+    @Autowired private SysRoleMapper roleMapper;
     @Autowired private PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -97,5 +100,16 @@ public class SysUserService extends ServiceImpl<SysUserMapper, SysUser> {
         if (user == null) throw new BusinessException("用户不存在");
         user.setPassword(null);
         return user;
+    }
+
+    public List<SysRole> findUserRoles(Long userId) {
+        List<Long> roleIds = userRoleMapper.selectList(
+                new LambdaQueryWrapper<>(SysUserRole.class)
+                        .eq(SysUserRole::getUserId, userId))
+                .stream()
+                .map(SysUserRole::getRoleId)
+                .toList();
+        if (roleIds.isEmpty()) return List.of();
+        return roleMapper.selectBatchIds(roleIds);
     }
 }
