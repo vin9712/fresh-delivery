@@ -123,6 +123,30 @@ CREATE TABLE sku (
     updated_at DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) COMMENT = 'SKU表';
 
+CREATE TABLE product_category (
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    parent_id   BIGINT       DEFAULT 0,
+    name        VARCHAR(100) NOT NULL,
+    code        VARCHAR(50),
+    level       INT          DEFAULT 0,
+    sort        INT          DEFAULT 0,
+    is_deleted  TINYINT      DEFAULT 0,
+    create_by   VARCHAR(50),
+    create_time DATETIME     DEFAULT CURRENT_TIMESTAMP,
+    update_by   VARCHAR(50),
+    update_time DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    remark      VARCHAR(500),
+    INDEX idx_parent_id (parent_id)
+) COMMENT = '商品分类';
+
+-- 商品分类示例数据
+INSERT INTO product_category (id, parent_id, name, code, level, sort) VALUES
+(1, 0, '蔬菜类', 'SC', 0, 1),
+(2, 0, '水果类', 'SG', 0, 2),
+(3, 0, '肉禽蛋类', 'RQD', 0, 3),
+(4, 1, '叶菜类', 'YC', 1, 1),
+(5, 1, '根茎类', 'GJ', 1, 2);
+
 -- ============================================================
 -- 3. 客户与配送点表
 -- ============================================================
@@ -137,11 +161,14 @@ CREATE TABLE customer (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
     category_id      BIGINT       COMMENT '客户分类',
     name             VARCHAR(100) NOT NULL COMMENT '客户名称',
+    alias            VARCHAR(200) COMMENT '客户别名',
+    type             INT          DEFAULT 0 COMMENT '客户类型',
     contact_person   VARCHAR(50)  COMMENT '联系人',
     phone            VARCHAR(20)  COMMENT '联系电话',
     address          VARCHAR(200) COMMENT '默认地址',
     settlement_cycle TINYINT      COMMENT '结算周期 1周 2月',
     status           TINYINT DEFAULT 1 COMMENT '0停用 1启用',
+    remark           VARCHAR(500) COMMENT '备注',
     created_at       DATETIME     DEFAULT CURRENT_TIMESTAMP,
     updated_at       DATETIME     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) COMMENT = '客户表';
@@ -150,10 +177,13 @@ CREATE TABLE delivery_point (
     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
     customer_id    BIGINT       NOT NULL,
     name           VARCHAR(100) NOT NULL COMMENT '配送点名称',
+    code           VARCHAR(50)  COMMENT '编号',
+    mnemonic_code  VARCHAR(20)  COMMENT '助记码',
     address        VARCHAR(200) COMMENT '配送地址',
     contact_person VARCHAR(50)  COMMENT '联系人',
     phone          VARCHAR(20)  COMMENT '联系电话',
     status         TINYINT DEFAULT 1,
+    remark         VARCHAR(500) COMMENT '备注',
     created_at     DATETIME     DEFAULT CURRENT_TIMESTAMP
 ) COMMENT = '配送点表';
 

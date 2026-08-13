@@ -52,6 +52,11 @@ const routes = [
         component: () => import('../views/base/Sku.vue')
       },
       {
+        path: 'product-category',
+        name: 'ProductCategory',
+        component: () => import('../views/base/ProductCategory.vue')
+      },
+      {
         path: 'category',
         name: 'Category',
         component: () => import('../views/base/CustomerCategory.vue')

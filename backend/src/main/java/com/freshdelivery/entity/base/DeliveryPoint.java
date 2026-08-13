@@ -17,6 +17,12 @@ public class DeliveryPoint {
     @TableField("name")
     private String name;
 
+    @TableField("code")
+    private String code;
+
+    @TableField("mnemonic_code")
+    private String mnemonicCode;
+
     @TableField("address")
     private String address;
 
@@ -28,6 +34,9 @@ public class DeliveryPoint {
 
     @TableField("status")
     private Integer status;
+
+    @TableField("remark")
+    private String remark;
 
     @TableField("created_at")
     private LocalDateTime createdAt;

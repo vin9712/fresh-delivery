@@ -17,6 +17,12 @@ public class Customer {
     @TableField("name")
     private String name;
 
+    @TableField("alias")
+    private String alias;
+
+    @TableField("type")
+    private Integer type;
+
     @TableField("contact_person")
     private String contactPerson;
 
@@ -31,6 +37,9 @@ public class Customer {
 
     @TableField("status")
     private Integer status;
+
+    @TableField("remark")
+    private String remark;
 
     @TableField("created_at")
     private LocalDateTime createdAt;

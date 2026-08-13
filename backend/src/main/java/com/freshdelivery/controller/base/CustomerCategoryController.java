@@ -21,6 +21,11 @@ public class CustomerCategoryController {
         return Result.ok(categoryService.list());
     }
 
+    @GetMapping("/listAll")
+    public Result<List<CustomerCategory>> listAll() {
+        return Result.ok(categoryService.listAll());
+    }
+
     @PostMapping
     @OperationLog(module = "category", action = "add")
     public Result<Void> create(@RequestBody CustomerCategory category) {

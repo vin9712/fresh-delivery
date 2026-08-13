@@ -23,6 +23,19 @@ public class CustomerController {
         return Result.ok(customerService.page(pageNum, pageSize, keyword, categoryId));
     }
 
+    @GetMapping("/pageFilter")
+    public Result<PageResult<Customer>> pageByFilter(@RequestParam(defaultValue = "1") int pageNum,
+                                                      @RequestParam(defaultValue = "10") int pageSize,
+                                                      @RequestParam(required = false) String name,
+                                                      @RequestParam(required = false) Integer status) {
+        return Result.ok(customerService.pageByFilter(pageNum, pageSize, name, status));
+    }
+
+    @GetMapping("/list")
+    public Result<java.util.List<Customer>> list() {
+        return Result.ok(customerService.list());
+    }
+
     @GetMapping("/{id}")
     public Result<Customer> detail(@PathVariable Long id) {
         return Result.ok(customerService.detail(id));

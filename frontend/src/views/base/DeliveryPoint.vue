@@ -1,88 +1,136 @@
 <template>
-  <div class="delivery-point-page">
-    <el-card>
-      <div class="toolbar">
-        <el-form inline>
-          <el-form-item>
-            <el-input v-model="keyword" placeholder="名称/联系人/电话" clearable style="width: 220px" @keyup.enter="load" />
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="customerId" placeholder="选择客户" clearable style="width: 160px" @change="load">
-              <el-option v-for="c in customers" :key="c.id" :label="c.name" :value="c.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="load">搜索</el-button>
-          </el-form-item>
-        </el-form>
-        <el-button type="primary" @click="openCreate">新增配送点</el-button>
-      </div>
-
-      <el-table :data="list" v-loading="loading" border>
-        <el-table-column prop="id" label="ID" width="60" />
-        <el-table-column prop="customerId" label="客户ID" width="90" />
-        <el-table-column prop="name" label="配送点名称" />
-        <el-table-column prop="address" label="配送地址" show-overflow-tooltip />
-        <el-table-column prop="contactPerson" label="联系人" />
-        <el-table-column prop="phone" label="联系电话" />
-        <el-table-column prop="status" label="状态" width="80">
-          <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '启用' : '停用' }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="createdAt" label="创建时间" />
-        <el-table-column label="操作" width="180">
-          <template #default="{ row }">
-            <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
-            <el-button link type="danger" @click="remove(row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <div class="pagination">
-        <el-pagination
-          v-model:current-page="pageNum"
-          v-model:page-size="pageSize"
-          :total="total"
-          :page-sizes="[10, 20, 50]"
-          layout="total, sizes, prev, pager, next"
-          @size-change="load"
-          @current-change="load"
+  <div class="app-container">
+    <el-form
+      :model="queryParams"
+      :rules="queryFormRules"
+      ref="queryFormRef"
+      size="small"
+      :inline="true"
+      v-show="showSearch"
+      label-width="80px"
+    >
+      <el-form-item label="当前客户" prop="customerId">
+        <el-select v-model="queryParams.customerId" filterable placeholder="请选择客户" @change="handleQuery">
+          <el-option
+            v-for="item in customerOptions"
+            :key="item.id"
+            :label="item.alias || item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="部门名称" prop="name">
+        <el-input
+          v-model="queryParams.name"
+          placeholder="请输入部门名称"
+          clearable
+          @keyup.enter="handleQuery"
         />
-      </div>
-    </el-card>
+      </el-form-item>
+      <el-form-item label="是否有效" prop="status">
+        <el-select v-model="queryParams.status" placeholder="请选择是否有效" clearable>
+          <el-option label="有效" :value="1" />
+          <el-option label="无效" :value="0" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" :icon="Search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button :icon="Refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
 
-    <el-dialog v-model="dialogVisible" :title="isEdit ? '编辑配送点' : '新增配送点'" width="480px">
-      <el-form ref="formRef" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="客户" prop="customerId">
-          <el-select v-model="form.customerId" style="width: 100%" filterable>
-            <el-option v-for="c in customers" :key="c.id" :label="c.name" :value="c.id" />
+    <el-row :gutter="10" class="mb8">
+      <el-col :span="1.5">
+        <el-button type="primary" plain :icon="Plus" size="mini" @click="handleAdd">新增</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="success" plain :icon="Edit" size="mini" :disabled="single" @click="handleUpdate">修改</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="danger" plain :icon="Delete" size="mini" :disabled="multiple" @click="handleDelete">删除</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="warning" plain :icon="Download" size="mini" @click="handleExport">导出</el-button>
+      </el-col>
+      <el-col :span="1.5" style="float: right">
+        <el-button :icon="searchIcon" size="mini" link @click="showSearch = !showSearch">
+          {{ showSearch ? '隐藏搜索' : '显示搜索' }}
+        </el-button>
+      </el-col>
+    </el-row>
+
+    <el-table
+      v-loading="loading"
+      :data="deliveryPointList"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="编号" align="center" prop="code" />
+      <el-table-column label="客户部门" align="center" prop="name" />
+      <el-table-column label="是否有效" align="center" prop="status">
+        <template #default="scope">
+          <span>{{ scope.row.status === 1 ? '有效' : '无效' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template #default="scope">
+          <el-button size="mini" type="primary" link :icon="Edit" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button size="mini" type="primary" link :icon="Delete" @click="handleDelete(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-pagination
+      v-show="total > 0"
+      :total="total"
+      :page-sizes="[10, 20, 50]"
+      :current-page="queryParams.pageNum"
+      :page-size="queryParams.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+
+    <el-dialog :title="title" v-model="open" width="500px" append-to-body>
+      <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="当前客户" prop="customerId">
+          <el-select v-model="form.customerId" disabled>
+            <el-option
+              v-for="item in customerOptions"
+              :key="item.id"
+              :label="item.alias || item.name"
+              :value="item.id"
+            />
           </el-select>
         </el-form-item>
-        <el-form-item label="名称" prop="name">
-          <el-input v-model="form.name" />
+        <el-form-item label="部门名称" prop="name">
+          <el-input
+            v-model="form.name"
+            @input="handleUpdateMnemonicCode"
+            placeholder="请输入部门名称"
+          />
         </el-form-item>
-        <el-form-item label="地址" prop="address">
-          <el-input v-model="form.address" type="textarea" />
+        <el-form-item label="助记码" prop="mnemonicCode">
+          <el-input
+            v-model="form.mnemonicCode"
+            placeholder="请输入助记码"
+            :disabled="form.id != null"
+          />
         </el-form-item>
-        <el-form-item label="联系人">
-          <el-input v-model="form.contactPerson" />
-        </el-form-item>
-        <el-form-item label="联系电话">
-          <el-input v-model="form.phone" />
-        </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="是否有效" prop="status">
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">启用</el-radio>
-            <el-radio :label="0">停用</el-radio>
+            <el-radio :label="1">有效</el-radio>
+            <el-radio :label="0">无效</el-radio>
           </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" :loading="submitting" @click="submit">确定</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
       </template>
     </el-dialog>
   </div>
@@ -90,92 +138,226 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getDeliveryPointPage, createDeliveryPoint, updateDeliveryPoint, deleteDeliveryPoint } from '../../api/deliveryPoint'
-import { getCustomerPage } from '../../api/customer'
+import { Search, Refresh, Plus, Edit, Delete, Download } from '@element-plus/icons-vue'
+import { listDeliveryPoint, getDeliveryPointDetail, createDeliveryPoint, updateDeliveryPoint, deleteDeliveryPoint } from '../../api/deliveryPoint'
+import { getAllCustomers } from '../../api/customer'
+import { download } from '../../utils/download'
+import { pinyin } from 'pinyin-pro'
 
-const list = ref([])
-const loading = ref(false)
+const route = useRoute()
+
+const loading = ref(true)
+const ids = ref([])
+const deptCodes = ref([])
+const single = ref(true)
+const multiple = ref(true)
+const showSearch = ref(true)
 const total = ref(0)
-const pageNum = ref(1)
-const pageSize = ref(10)
-const keyword = ref('')
-const customerId = ref(null)
-const customers = ref([])
-
-const dialogVisible = ref(false)
-const isEdit = ref(false)
-const editingId = ref(null)
-const submitting = ref(false)
+const customerOptions = ref([])
+const deliveryPointList = ref([])
+const title = ref('')
+const open = ref(false)
 const formRef = ref(null)
-const form = reactive({ customerId: null, name: '', address: '', contactPerson: '', phone: '', status: 1 })
+const queryFormRef = ref(null)
+const searchIcon = ref(Search)
+
+const defaultCustomerId = ref(null)
+
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  customerId: null,
+  name: null,
+  status: null
+})
+
+const queryFormRules = {
+  customerId: [
+    { required: true, message: '当前客户不能为空', trigger: 'change' }
+  ]
+}
+
+const form = reactive({
+  id: null,
+  customerId: null,
+  name: null,
+  mnemonicCode: null,
+  status: 1,
+  remark: null
+})
 
 const rules = {
-  customerId: [{ required: true, message: '请选择客户', trigger: 'change' }],
-  name: [{ required: true, message: '请输入名称', trigger: 'blur' }]
+  customerId: [
+    { required: true, message: '当前客户不能为空', trigger: 'change' }
+  ],
+  name: [
+    { required: true, message: '部门名称不能为空', trigger: 'blur' }
+  ],
+  mnemonicCode: [
+    { required: true, message: '助记码不能为空', trigger: 'blur' }
+  ],
+  status: [
+    { required: true, message: '是否有效不能为空', trigger: 'change' }
+  ]
 }
 
-async function load() {
+function getPageList() {
   loading.value = true
-  try {
-    const res = await getDeliveryPointPage({ pageNum: pageNum.value, pageSize: pageSize.value, keyword: keyword.value, customerId: customerId.value })
-    list.value = res.data.records
-    total.value = res.data.total
-  } finally {
+  listDeliveryPoint(queryParams).then(response => {
+    deliveryPointList.value = response.data.records || []
+    total.value = response.data.total || 0
     loading.value = false
-  }
+  }).catch(() => {
+    loading.value = false
+  })
 }
 
-async function loadCustomers() {
-  const res = await getCustomerPage({ pageNum: 1, pageSize: 500 })
-  customers.value = res.data.records
+function getCustomerList() {
+  getAllCustomers().then(response => {
+    customerOptions.value = response.data || []
+  })
 }
 
-function openCreate() {
-  isEdit.value = false
-  editingId.value = null
-  Object.assign(form, { customerId: null, name: '', address: '', contactPerson: '', phone: '', status: 1 })
-  dialogVisible.value = true
+function cancel() {
+  open.value = false
+  reset()
 }
 
-async function openEdit(row) {
-  isEdit.value = true
-  editingId.value = row.id
-  Object.assign(form, { customerId: row.customerId, name: row.name, address: row.address || '', contactPerson: row.contactPerson || '', phone: row.phone || '', status: row.status })
-  dialogVisible.value = true
+function reset() {
+  Object.assign(form, {
+    id: null,
+    customerId: defaultCustomerId.value,
+    name: null,
+    mnemonicCode: null,
+    status: 1,
+    remark: null
+  })
+  if (formRef.value) formRef.value.resetFields()
 }
 
-async function submit() {
-  await formRef.value.validate()
-  submitting.value = true
-  try {
-    const data = { customerId: form.customerId, name: form.name, address: form.address, contactPerson: form.contactPerson, phone: form.phone, status: form.status }
-    if (isEdit.value) {
-      await updateDeliveryPoint(editingId.value, data)
-      ElMessage.success('更新成功')
-    } else {
-      await createDeliveryPoint(data)
-      ElMessage.success('创建成功')
+function handleQuery() {
+  queryParams.pageNum = 1
+  getPageList()
+}
+
+function resetQuery() {
+  if (queryFormRef.value) queryFormRef.value.resetFields()
+  queryParams.customerId = defaultCustomerId.value
+  queryParams.status = null
+  queryParams.name = null
+  handleQuery()
+}
+
+function handleSelectionChange(selection) {
+  ids.value = selection.map(item => item.id)
+  deptCodes.value = selection.map(item => item.code)
+  single.value = selection.length !== 1
+  multiple.value = !selection.length
+}
+
+function handleSizeChange(val) {
+  queryParams.pageSize = val
+  queryParams.pageNum = 1
+  getPageList()
+}
+
+function handleCurrentChange(val) {
+  queryParams.pageNum = val
+  getPageList()
+}
+
+function handleAdd() {
+  reset()
+  open.value = true
+  title.value = '添加配送点'
+}
+
+function handleUpdate(row) {
+  reset()
+  const id = row.id || ids.value[0]
+  getDeliveryPointDetail(id).then(response => {
+    Object.assign(form, response.data)
+    open.value = true
+    title.value = '修改配送点'
+  })
+}
+
+function submitForm() {
+  formRef.value.validate(valid => {
+    if (valid) {
+      if (form.id != null) {
+        updateDeliveryPoint(form.id, form).then(() => {
+          ElMessage.success('修改成功')
+          open.value = false
+          getPageList()
+        })
+      } else {
+        createDeliveryPoint(form).then(() => {
+          ElMessage.success('新增成功')
+          open.value = false
+          getPageList()
+        })
+      }
     }
-    dialogVisible.value = false
-    await load()
-  } finally {
-    submitting.value = false
+  })
+}
+
+function handleDelete(row) {
+  const deleteIds = row.id || ids.value
+  const codes = row.code || deptCodes.value
+  ElMessageBox.confirm('是否确认删除配送点编号为"' + codes + '"的数据项？')
+    .then(() => {
+      if (Array.isArray(deleteIds)) {
+        return Promise.all(deleteIds.map(id => deleteDeliveryPoint(id)))
+      } else {
+        return deleteDeliveryPoint(deleteIds)
+      }
+    })
+    .then(() => {
+      getPageList()
+      ElMessage.success('删除成功')
+    })
+    .catch(() => {})
+}
+
+function handleExport() {
+  download('base/delivery-point/export', {
+    ...queryParams
+  }, `deliveryPoint_${new Date().getTime()}.xlsx`)
+}
+
+// 拼音首字母助记码自动生成
+function handleUpdateMnemonicCode() {
+  const value = form.name
+  if (!value) {
+    form.mnemonicCode = ''
+    return
   }
+  form.mnemonicCode = pinyin(value, {
+    pattern: 'first',
+    toneType: 'none',
+    type: 'array'
+  }).join('').toUpperCase()
 }
 
-async function remove(row) {
-  await ElMessageBox.confirm(`确定删除配送点"${row.name}"吗？`, '确认')
-  await deleteDeliveryPoint(row.id)
-  ElMessage.success('删除成功')
-  await load()
-}
-
-onMounted(() => { load(); loadCustomers() })
+onMounted(() => {
+  const cid = route.query.customerId
+  if (cid) {
+    defaultCustomerId.value = Number(cid)
+    queryParams.customerId = Number(cid)
+  }
+  getCustomerList()
+  getPageList()
+})
 </script>
 
 <style scoped>
-.delivery-point-page { padding: 16px }
-.toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px }
-.pagination { margin-top: 16px; text-align: right }
+.app-container {
+  padding: 16px;
+}
+.mb8 {
+  margin-bottom: 8px;
+}
 </style>

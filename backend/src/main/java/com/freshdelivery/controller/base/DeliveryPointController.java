@@ -25,9 +25,25 @@ public class DeliveryPointController {
         return Result.ok(deliveryPointService.page(pageNum, pageSize, keyword, customerId));
     }
 
+    @GetMapping("/list")
+    public Result<PageResult<DeliveryPoint>> list(@RequestParam(defaultValue = "1") int pageNum,
+                                                   @RequestParam(defaultValue = "10") int pageSize,
+                                                   @RequestParam(required = false) Long customerId,
+                                                   @RequestParam(required = false) String name,
+                                                   @RequestParam(required = false) Integer status) {
+        return Result.ok(deliveryPointService.list(pageNum, pageSize, customerId, name, status));
+    }
+
     @GetMapping("/customer/{customerId}")
     public Result<List<DeliveryPoint>> listByCustomer(@PathVariable Long customerId) {
         return Result.ok(deliveryPointService.findByCustomerId(customerId));
+    }
+
+    @GetMapping("/{id}")
+    public Result<DeliveryPoint> detail(@PathVariable Long id) {
+        DeliveryPoint point = deliveryPointService.getById(id);
+        if (point == null) return Result.error("配送点不存在");
+        return Result.ok(point);
     }
 
     @PostMapping

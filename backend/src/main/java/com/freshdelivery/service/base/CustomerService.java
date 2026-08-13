@@ -40,6 +40,11 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
         return customer;
     }
 
+    public java.util.List<Customer> list() {
+        return this.list(new LambdaQueryWrapper<>(Customer.class)
+                .orderByDesc(Customer::getCreatedAt));
+    }
+
     public PageResult<Customer> page(int pageNum, int pageSize, String keyword, Long categoryId) {
         LambdaQueryWrapper<Customer> wrapper = new LambdaQueryWrapper<>();
         if (keyword != null && !keyword.isBlank()) {
@@ -49,6 +54,25 @@ public class CustomerService extends ServiceImpl<CustomerMapper, Customer> {
         }
         if (categoryId != null) {
             wrapper.eq(Customer::getCategoryId, categoryId);
+        }
+        wrapper.orderByDesc(Customer::getCreatedAt);
+
+        var p = this.page(new com.baomidou.mybatisplus.extension.plugins.pagination.Page<>(pageNum, pageSize), wrapper);
+        PageResult<Customer> result = new PageResult<>();
+        result.setRecords(p.getRecords());
+        result.setTotal(p.getTotal());
+        result.setPageNum(pageNum);
+        result.setPageSize(pageSize);
+        return result;
+    }
+
+    public PageResult<Customer> pageByFilter(int pageNum, int pageSize, String name, Integer status) {
+        LambdaQueryWrapper<Customer> wrapper = new LambdaQueryWrapper<>();
+        if (name != null && !name.isBlank()) {
+            wrapper.like(Customer::getName, name);
+        }
+        if (status != null) {
+            wrapper.eq(Customer::getStatus, status);
         }
         wrapper.orderByDesc(Customer::getCreatedAt);
 

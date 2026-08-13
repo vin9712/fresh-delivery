@@ -12,15 +12,22 @@
     "@element-plus/icons-vue": "^2.3.1",
     "axios": "^1.6.2",
     "element-plus": "^2.4.4",
+    "@m-kusumgar/vue3-treeselect": "^1.0.18",
     "pinia": "^2.1.7",
     "sortablejs": "^1.15.3",
     "vue": "^3.3.13",
     "vue-router": "^4.2.5",
     "vxe-table": "^4.13.21",
-    "xe-utils": "^3.5.5"
+    "xe-utils": "^3.5.5",
+    "pinyin-pro": "^3.19.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.6.2",
     "vite": "^5.0.10"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true,
+    "fsevents@2.3.3": true,
+    "vue-demi@0.14.10": true
   }
 }

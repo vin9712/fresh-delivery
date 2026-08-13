@@ -54,6 +54,10 @@
             <el-icon><Box /></el-icon>
             <template #title>SKU管理</template>
           </el-menu-item>
+          <el-menu-item index="/product-category">
+            <el-icon><Folder /></el-icon>
+            <template #title>商品分类</template>
+          </el-menu-item>
           <el-menu-item index="/category">
             <el-icon><Fold /></el-icon>
             <template #title>客户分类</template>
@@ -192,6 +196,7 @@ const menuTitleMap = {
   '/log': '操作日志',
   '/product': '商品管理',
   '/sku': 'SKU管理',
+  '/product-category': '商品分类',
   '/category': '客户分类',
   '/customer': '客户管理',
   '/delivery-point': '配送点',

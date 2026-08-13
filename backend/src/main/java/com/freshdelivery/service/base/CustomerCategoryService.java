@@ -35,4 +35,9 @@ public class CustomerCategoryService extends ServiceImpl<CustomerCategoryMapper,
                 .eq(CustomerCategory::getStatus, 1)
                 .orderByAsc(CustomerCategory::getId));
     }
+
+    public List<CustomerCategory> listAll() {
+        return this.list(new LambdaQueryWrapper<>(CustomerCategory.class)
+                .orderByAsc(CustomerCategory::getId));
+    }
 }

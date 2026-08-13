@@ -1,7 +1,7 @@
 import request from '../utils/request'
 
 export function getCategoryList() {
-  return request({ url: '/base/category/list', method: 'get' })
+  return request({ url: '/base/category/listAll', method: 'get' })
 }
 
 export function createCategory(data) {
