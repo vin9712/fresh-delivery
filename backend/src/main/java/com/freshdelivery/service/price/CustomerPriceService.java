@@ -1,3 +1,5 @@
+package com.freshdelivery.service.price;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freshdelivery.common.PageResult;
