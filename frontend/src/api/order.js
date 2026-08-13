@@ -20,8 +20,18 @@ export function updateOrder(id, data) {
   return request({ url: `/order/${id}`, method: 'put', data })
 }
 
+// 全量替换明细：删旧插新
+export function updateOrderWithItems(id, data) {
+  return request({ url: `/order/${id}/with-items`, method: 'put', data })
+}
+
 export function deleteOrder(id) {
   return request({ url: `/order/${id}`, method: 'delete' })
+}
+
+// 最近订单
+export function getRecentOrders(params) {
+  return request({ url: '/order/recent', method: 'get', params })
 }
 
 export function confirmOrder(id) {

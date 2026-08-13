@@ -1,9 +1,8 @@
-package com.freshdelivery.service.price;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.freshdelivery.common.PageResult;
 import com.freshdelivery.entity.price.CustomerPrice;
+import com.freshdelivery.entity.price.CustomerSkuPrice;
 import com.freshdelivery.entity.price.PriceTemplateSku;
 import com.freshdelivery.mapper.price.CustomerPriceMapper;
 import com.freshdelivery.mapper.price.PriceTemplateSkuMapper;
@@ -18,6 +17,7 @@ import java.util.List;
 public class CustomerPriceService extends ServiceImpl<CustomerPriceMapper, CustomerPrice> {
 
     @Autowired private PriceTemplateSkuMapper templateSkuMapper;
+    @Autowired private CustomerPriceMapper customerPriceMapper;
 
     public CustomerPrice create(CustomerPrice price) {
         this.save(price);
@@ -94,5 +94,9 @@ public class CustomerPriceService extends ServiceImpl<CustomerPriceMapper, Custo
         if (price == null) throw new BusinessException("报价不存在");
         price.setStatus(2);
         this.updateById(price);
+    }
+
+    public List<CustomerSkuPrice> listSkuPrices(Long customerId) {
+        return customerPriceMapper.listByCustomer(customerId);
     }
 }

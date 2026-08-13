@@ -26,6 +26,12 @@ public class OrderController {
         private List<OrderItem> items;
     }
 
+    @Data
+    public static class UpdateOrderRequest {
+        private Order order;
+        private List<OrderItem> items;
+    }
+
     @GetMapping("/page")
     public Result<PageResult<Order>> page(@RequestParam(defaultValue = "1") int pageNum,
                                            @RequestParam(defaultValue = "10") int pageSize,
@@ -57,6 +63,20 @@ public class OrderController {
     public Result<Void> update(@PathVariable Long id, @RequestBody Order order) {
         orderService.update(id, order);
         return Result.ok();
+    }
+
+    @PutMapping("/{id}/with-items")
+    @OperationLog(module = "order", action = "edit_with_items")
+    public Result<Void> updateWithItems(@PathVariable Long id, @RequestBody UpdateOrderRequest request) {
+        orderService.updateWithItems(id, request.getOrder(), request.getItems());
+        return Result.ok();
+    }
+
+    @GetMapping("/recent")
+    public Result<List<Order>> recent(@RequestParam(defaultValue = "3") int days,
+                                       @RequestParam(required = false) Long customerId,
+                                       @RequestParam(required = false) String keyword) {
+        return Result.ok(orderService.recent(days, customerId, keyword));
     }
 
     @DeleteMapping("/{id}")

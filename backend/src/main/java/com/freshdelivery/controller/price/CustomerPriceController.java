@@ -4,9 +4,12 @@ import com.freshdelivery.common.PageResult;
 import com.freshdelivery.common.Result;
 import com.freshdelivery.common.aop.OperationLog;
 import com.freshdelivery.entity.price.CustomerPrice;
+import com.freshdelivery.entity.price.CustomerSkuPrice;
 import com.freshdelivery.service.price.CustomerPriceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/price/customer")
@@ -21,6 +24,11 @@ public class CustomerPriceController {
                                                     @RequestParam(required = false) Long customerId,
                                                     @RequestParam(required = false) Integer status) {
         return Result.ok(customerPriceService.page(pageNum, pageSize, null, customerId, status));
+    }
+
+    @GetMapping("/sku-prices/{customerId}")
+    public Result<List<CustomerSkuPrice>> listSkuPrices(@PathVariable Long customerId) {
+        return Result.ok(customerPriceService.listSkuPrices(customerId));
     }
 
     @PostMapping

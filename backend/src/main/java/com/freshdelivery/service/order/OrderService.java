@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService extends ServiceImpl<OrderMapper, Order> {
@@ -51,6 +52,32 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
         order.setOrderNo(null);
         order.setCreatedAt(null);
         this.updateById(order);
+    }
+
+    @Transactional
+    public void updateWithItems(Long id, Order order, List<OrderItem> items) {
+        if (this.getById(id) == null) throw new BusinessException("订单不存在");
+        // 更新订单头
+        order.setId(id);
+        order.setOrderNo(null);
+        order.setCreatedAt(null);
+        order.setUpdatedAt(LocalDateTime.now());
+        this.updateById(order);
+        // 全量替换明细：删旧插新
+        itemMapper.delete(new LambdaQueryWrapper<>(OrderItem.class).eq(OrderItem::getOrderId, id));
+        LocalDateTime now = LocalDateTime.now();
+        for (OrderItem item : items) {
+            item.setId(null);
+            item.setOrderId(id);
+            item.setItemStatus(0);
+            item.setCreatedAt(now);
+            if (item.getUnitPrice() != null && item.getQuantity() != null) {
+                item.setSubtotal(item.getUnitPrice().multiply(item.getQuantity()).setScale(2, java.math.RoundingMode.HALF_UP));
+            } else {
+                item.setSubtotal(null);
+            }
+            itemMapper.insert(item);
+        }
     }
 
     public void delete(Long id) {
@@ -122,6 +149,21 @@ public class OrderService extends ServiceImpl<OrderMapper, Order> {
         if (order == null) throw new BusinessException("订单不存在");
         order.setStatus(4);
         this.updateById(order);
+    }
+
+    public List<Order> recent(int days, Long customerId, String keyword) {
+        LambdaQueryWrapper<Order> wrapper = new LambdaQueryWrapper<>();
+        if (days > 0) {
+            wrapper.ge(Order::getCreatedAt, LocalDateTime.now().minusDays(days));
+        }
+        if (customerId != null) {
+            wrapper.eq(Order::getCustomerId, customerId);
+        }
+        if (keyword != null && !keyword.isBlank()) {
+            wrapper.and(w -> w.like(Order::getOrderNo, keyword).or().like(Order::getRemark, keyword));
+        }
+        wrapper.orderByDesc(Order::getCreatedAt);
+        return this.list(wrapper);
     }
 
     private int nextNo() {

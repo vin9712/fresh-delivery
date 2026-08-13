@@ -19,3 +19,8 @@ export function updateCustomer(id, data) {
 export function deleteCustomer(id) {
   return request({ url: `/base/customer/${id}`, method: 'delete' })
 }
+
+// 按客户获取 SKU 报价列表（下拉数据源：skuId / productName / productUnit / productSpec / price）
+export function getCustomerSkuPrices(customerId) {
+  return request({ url: `/price/customer/sku-prices/${customerId}`, method: 'get' })
+}

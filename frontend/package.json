@@ -13,8 +13,11 @@
     "axios": "^1.6.2",
     "element-plus": "^2.4.4",
     "pinia": "^2.1.7",
+    "sortablejs": "^1.15.3",
     "vue": "^3.3.13",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vxe-table": "^4.13.21",
+    "xe-utils": "^3.5.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.6.2",
